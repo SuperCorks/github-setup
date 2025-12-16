@@ -1,6 +1,6 @@
 # Repository Setup Guide
 
-Use this guide to quickly configure a new repository with `main` and `develop` branches and standard branch protection rules using the GitHub CLI (`gh`).
+Use this guide to quickly configure a new repository with `main` and `develop` branches and standard branch protection using GitHub Rulesets via the GitHub CLI (`gh`).
 
 ## Prerequisites
 
@@ -47,38 +47,49 @@ gh api -X PATCH "repos/$REPO" `
   -f squash_merge_commit_message="COMMIT_MESSAGES"
 ```
 
-## 3. Configure Branch Protection
+## 3. Configure Branch Protection (Rulesets)
 
-Protect `main` and `develop` to prevent force pushes and deletions.
+Protect `main` and `develop` to prevent force pushes and deletions, and require pull requests using GitHub Rulesets.
 
-A `protection-settings.json` file is included in this repository with the following configuration:
+A `ruleset-settings.json` file is included in this repository with the following configuration:
 
 ```json
 {
-  "required_status_checks": null,
-  "enforce_admins": null,
-  "required_pull_request_reviews": {
-    "dismiss_stale_reviews": false,
-    "require_code_owner_reviews": false,
-    "required_approving_review_count": 1
+  "name": "Default Branch Protection",
+  "target": "branch",
+  "enforcement": "active",
+  "conditions": {
+    "ref_name": {
+      "include": [
+        "refs/heads/main",
+        "refs/heads/develop"
+      ],
+      "exclude": []
+    }
   },
-  "restrictions": null,
-  "allow_force_pushes": false,
-  "allow_deletions": false,
-  "block_creations": false,
-  "required_conversation_resolution": false,
-  "lock_branch": false,
-  "allow_fork_syncing": false,
-  "required_linear_history": false
+  "rules": [
+    {
+      "type": "deletion"
+    },
+    {
+      "type": "non_fast_forward"
+    },
+    {
+      "type": "pull_request",
+      "parameters": {
+        "required_approving_review_count": 1,
+        "dismiss_stale_reviews_on_push": false,
+        "require_code_owner_review": false,
+        "require_last_push_approval": false,
+        "required_review_thread_resolution": false
+      }
+    }
+  ]
 }
 ```
 
-Apply these settings to both branches using the included file:
+Apply this ruleset to the repository:
 
 ```powershell
-# Apply to main
-gh api -X PUT "repos/$REPO/branches/main/protection" --input protection-settings.json
-
-# Apply to develop (if you want it protected)
-gh api -X PUT "repos/$REPO/branches/develop/protection" --input protection-settings.json
+gh api -X POST "repos/$REPO/rulesets" --input ruleset-settings.json
 ```
