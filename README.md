@@ -1,6 +1,6 @@
 # Repository Setup Guide
 
-Use this guide to quickly configure a new repository with `main` and `develop` branches and standard branch protection using GitHub Rulesets via the GitHub CLI (`gh`).
+Use this guide to quickly configure a new repository with `main` and `develop` branches (setting `develop` as default) and standard branch protection using GitHub Rulesets via the GitHub CLI (`gh`).
 
 ## Prerequisites
 
@@ -26,7 +26,15 @@ git checkout -b develop
 git push -u origin develop
 ```
 
-## 2. Configure Pull Request Settings
+## 2. Set Default Branch
+
+Set `develop` as the default branch for the repository.
+
+```powershell
+gh repo edit $REPO --default-branch develop
+```
+
+## 3. Configure Pull Request Settings
 
 Apply standard merge settings:
 - **Enable**: Squash merging (Default to PR Title)
@@ -47,7 +55,7 @@ gh api -X PATCH "repos/$REPO" `
   -f squash_merge_commit_message="COMMIT_MESSAGES"
 ```
 
-## 3. Configure Branch Protection (Rulesets)
+## 4. Configure Branch Protection (Rulesets)
 
 Protect `main` and `develop` to prevent force pushes and deletions, and require pull requests using GitHub Rulesets.
 
