@@ -1,11 +1,10 @@
 {
-  "name": "Default Branch Protection",
+  "name": "Develop Branch Protection",
   "target": "branch",
   "enforcement": "active",
   "conditions": {
     "ref_name": {
       "include": [
-        "refs/heads/main",
         "refs/heads/develop"
       ],
       "exclude": []

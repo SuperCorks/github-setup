@@ -59,18 +59,21 @@ gh api -X PATCH "repos/$REPO" `
 
 Protect `main` and `develop` to prevent force pushes and deletions, and require pull requests using GitHub Rulesets.
 
-A `ruleset-settings.json` file is included in this repository with the following configuration:
+Two configuration files are included in this repository:
+- `ruleset-main.json`: Protects the `main` branch.
+- `ruleset-develop.json`: Protects the `develop` branch.
+
+Both files use the following configuration structure:
 
 ```json
 {
-  "name": "Default Branch Protection",
+  "name": "Branch Protection",
   "target": "branch",
   "enforcement": "active",
   "conditions": {
     "ref_name": {
       "include": [
-        "refs/heads/main",
-        "refs/heads/develop"
+        "refs/heads/YOUR_BRANCH_NAME"
       ],
       "exclude": []
     }
@@ -96,8 +99,12 @@ A `ruleset-settings.json` file is included in this repository with the following
 }
 ```
 
-Apply this ruleset to the repository:
+Apply these rulesets to the repository:
 
 ```powershell
-gh api -X POST "repos/$REPO/rulesets" --input ruleset-settings.json
+# Apply main protection
+gh api -X POST "repos/$REPO/rulesets" --input ruleset-main.json
+
+# Apply develop protection
+gh api -X POST "repos/$REPO/rulesets" --input ruleset-develop.json
 ```
