@@ -70,6 +70,13 @@ Both files use the following configuration structure:
   "name": "Branch Protection",
   "target": "branch",
   "enforcement": "active",
+  "bypass_actors": [
+    {
+      "actor_id": 5,
+      "actor_type": "RepositoryRole",
+      "bypass_mode": "always"
+    }
+  ],
   "conditions": {
     "ref_name": {
       "include": [
@@ -98,6 +105,8 @@ Both files use the following configuration structure:
   ]
 }
 ```
+
+The `bypass_actors` section allows repository admins (role ID 5) to bypass the branch protection rules.
 
 Apply these rulesets to the repository:
 
